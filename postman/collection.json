@@ -1,0 +1,281 @@
+{
+  "info": {
+    "name": "Image Import API",
+    "description": "Scalable Image Import System - Foto Owl AI Assignment\n\nThis collection contains all API endpoints for importing images from Google Drive and Dropbox.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "description": "API Base URL"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Root endpoint - returns API health status"
+          },
+          "response": []
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Health check endpoint"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Import",
+      "item": [
+        {
+          "name": "Import from Google Drive",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder_url\": \"https://drive.google.com/drive/folders/YOUR_FOLDER_ID\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/import/google-drive",
+              "host": ["{{baseUrl}}"],
+              "path": ["import", "google-drive"]
+            },
+            "description": "Import images from a public Google Drive folder.\n\nReplace YOUR_FOLDER_ID with an actual public folder ID."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"job_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"status\": \"processing\",\n  \"message\": \"Import job started. Use GET /jobs/{job_id} to track progress.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Import from Dropbox",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder_url\": \"https://www.dropbox.com/sh/YOUR_SHARED_LINK\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/import/dropbox",
+              "host": ["{{baseUrl}}"],
+              "path": ["import", "dropbox"]
+            },
+            "description": "Import images from a public Dropbox shared folder.\n\nReplace YOUR_SHARED_LINK with an actual shared folder link."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"job_id\": \"550e8400-e29b-41d4-a716-446655440001\",\n  \"status\": \"processing\",\n  \"message\": \"Import job started. Use GET /jobs/{job_id} to track progress.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Job Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/import/jobs/:job_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["import", "jobs", ":job_id"],
+              "variable": [
+                {
+                  "key": "job_id",
+                  "value": "550e8400-e29b-41d4-a716-446655440000",
+                  "description": "The job ID returned from import endpoint"
+                }
+              ]
+            },
+            "description": "Get the status of an import job."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"job_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"status\": \"processing\",\n  \"source\": \"google_drive\",\n  \"source_url\": \"https://drive.google.com/drive/folders/xxx\",\n  \"total_files\": 100,\n  \"processed_files\": 45,\n  \"failed_files\": 2,\n  \"progress_percent\": 45.0,\n  \"error_message\": null,\n  \"created_at\": \"2025-12-30T10:00:00Z\",\n  \"completed_at\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "item": [
+        {
+          "name": "List All Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images",
+              "host": ["{{baseUrl}}"],
+              "path": ["images"]
+            },
+            "description": "Get a paginated list of all imported images."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"images\": [\n    {\n      \"id\": 1,\n      \"name\": \"photo.jpg\",\n      \"google_drive_id\": \"xxx\",\n      \"dropbox_id\": null,\n      \"source\": \"google_drive\",\n      \"size\": 1024000,\n      \"mime_type\": \"image/jpeg\",\n      \"storage_url\": \"https://xxx.supabase.co/storage/v1/object/public/images/...\",\n      \"created_at\": \"2025-12-30T10:00:00Z\"\n    }\n  ],\n  \"total\": 100,\n  \"page\": 1,\n  \"pages\": 5,\n  \"page_size\": 20\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Images with Pagination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["images"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Items per page (max 100)"
+                }
+              ]
+            },
+            "description": "Get a paginated list of images with custom page size."
+          },
+          "response": []
+        },
+        {
+          "name": "List Images - Filter by Google Drive",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images?source=google_drive",
+              "host": ["{{baseUrl}}"],
+              "path": ["images"],
+              "query": [
+                {
+                  "key": "source",
+                  "value": "google_drive",
+                  "description": "Filter by source"
+                }
+              ]
+            },
+            "description": "Get images imported from Google Drive only."
+          },
+          "response": []
+        },
+        {
+          "name": "List Images - Filter by Dropbox",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images?source=dropbox",
+              "host": ["{{baseUrl}}"],
+              "path": ["images"],
+              "query": [
+                {
+                  "key": "source",
+                  "value": "dropbox",
+                  "description": "Filter by source"
+                }
+              ]
+            },
+            "description": "Get images imported from Dropbox only."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Image",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/images/:image_id",
+              "host": ["{{baseUrl}}"],
+              "path": ["images", ":image_id"],
+              "variable": [
+                {
+                  "key": "image_id",
+                  "value": "1",
+                  "description": "Image ID"
+                }
+              ]
+            },
+            "description": "Get a single image by ID."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
