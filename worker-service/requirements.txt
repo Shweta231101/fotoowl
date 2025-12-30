@@ -3,7 +3,7 @@ redis==5.0.1
 sqlalchemy==2.0.25
 psycopg2-binary==2.9.9
 supabase==2.3.4
-httpx==0.26.0
+httpx==0.25.2
 google-api-python-client==2.116.0
 google-auth==2.27.0
 dropbox==11.36.2
