@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://localhost:6379"
 
+    # Google Drive API
+    google_api_key: str = ""
+
     # API Settings
     api_title: str = "Image Import API"
     api_version: str = "1.0.0"
